@@ -1,63 +1,75 @@
-let aliens =[];
+let aliens = [];
 
 class Alien {
-  constructor(name, status, currentHealth, damage){
-    this.name = name
-    this._status = status
-    this.currentHealth = currentHealth
-    this.damage = damage
+  constructor(name, status, currentHealth, damage) {
+    this.name = name;
+    this._status = status;
+    this.currentHealth = currentHealth;
+    this.damage = damage;
   }
 
-  bullsEye () {
-    this.currentHealth >= this.damage ? this.currentHealth -= this.damage : this.currentHealth = 0
+  bullsEye() {
+    this.currentHealth >= this.damage
+      ? (this.currentHealth -= this.damage)
+      : (this.currentHealth = 0);
   }
 
-  get isDead () {
-    return this.currentHealth < 1 ? "dead AF" : "alive AF"
+  get isDead() {
+    return this.currentHealth < 1 ? "dead" : "alive";
   }
 }
 
-function getInTheBin () {
-  aliens.splice = [0,aliens.length];
-}
-
-function alienSpawn () {
-  aliens[0] = new Alien ("Mother Ship", "alive", 100, 9);
-  for (let index = 1; index < 6; index++){
-    aliens[index] = new Alien ("Defence", "alive", 80, 10)};
-  for (let index = 6; index < 14; index++){
-    aliens[index] = new Alien ("Attack", "alive", 45, 12)};
-  return aliens
+const getInTheBin = () => {
+  aliens.splice = [0, aliens.length];
+  alienSpawn();
+  renderSpawn();
 };
-alienSpawn(); 
 
-function renderSpawn(){
-  let target = document.getElementById("alien-container")
-  target.innerHTML = ""
-  for(let index = 0; index < aliens.length; index++){
-    target.insertAdjacentHTML("beforeend", `<div id="aliens[index]") class="bobs"><p>${aliens[index].name}</p><p>${aliens[index].currentHealth}</p><p>${aliens[index].isDead}</p></div>`)
+const alienSpawn = () => {
+  aliens[0] = new Alien("Queen Alien", "alive", 100, 9);
+  for (let index = 1; index < 6; index++) {
+    aliens[index] = new Alien("Warrior Alien", "alive", 80, 10);
   }
- }
+  for (let index = 6; index < 14; index++) {
+    aliens[index] = new Alien("Facehugger", "alive", 45, 12);
+  }
+  return aliens;
+};
+alienSpawn();
 
- renderSpawn();
+const renderSpawn = () => {
+  let target = document.getElementById("alien-container");
+  target.innerHTML = "";
+  for (let index = 0; index < aliens.length; index++) {
+    target.insertAdjacentHTML(
+      "beforeend",
+      `<div id="aliens[index]") class="bobs"><p>${aliens[index].name}</p><p>${aliens[index].currentHealth}</p><p>${aliens[index].isDead}</p></div>`
+    );
+  }
+};
 
-let random = Math.floor(Math.random()*14)
-function attack() {
+renderSpawn();
+
+const attack = () => {
+  let random = Math.floor(Math.random() * aliens.length);
   if (aliens[0].currentHealth > 0) {
-    aliens[0].bullsEye();
-    random = Math.floor(Math.random()*14);
-    checkWin();
-    renderSpawn();
+    if (aliens[random].currentHealth > 0) {
+      aliens[random].bullsEye();
+      checkWin();
+      renderSpawn();
+    } else {
+      attack();
+    }
   }
 };
 
-function checkWin () {
+const checkWin = () => {
   if (aliens[0].currentHealth <= 0) {
-    alert("winner winner chicken dinner")
+    alert("Where is your office based and when shall I start?");
     getInTheBin();
     alienSpawn();
   }
-}
- 
+};
+
 document.getElementById("fire").addEventListener("click", attack);
 document.getElementById("reset").addEventListener("click", getInTheBin);
